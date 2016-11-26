@@ -1,0 +1,24 @@
+<configuration scan="true" scanPeriod="10 seconds">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="org.elasticsearch" level="INFO"/>
+
+    <logger name="com.avaje" level="INFO"/>
+    <logger name="org.avaje" level="INFO"/>
+
+
+    <logger name="org.avaje.dbmigration.ddl.DdlRunner" level="TRACE"/>
+
+    <logger name="org.avaje.ebean.SQL" level="TRACE"/>
+    <logger name="org.avaje.ebean.TXN" level="TRACE"/>
+    <logger name="org.avaje.ebean.SUM" level="TRACE"/>
+
+</configuration>
