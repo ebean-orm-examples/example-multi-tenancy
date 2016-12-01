@@ -11,7 +11,7 @@ public class ContentTest extends BaseTestCase {
   @Test
   public void insert() {
 
-    UserContext.set("rob", "r1");
+    UserContext.set("rob", "ten_1");
 
     Content bean = new Content();
     bean.setTitle("Testing 123");
@@ -19,7 +19,7 @@ public class ContentTest extends BaseTestCase {
     bean.setBody("Lots of interesting stuff to say here");
     bean.save();
 
-    UserContext.set("roger", "r1");
+    UserContext.set("roger", "ten_1");
 
     bean = new Content();
     bean.setTitle("Testing integration");
@@ -28,7 +28,7 @@ public class ContentTest extends BaseTestCase {
     bean.save();
 
 
-    UserContext.set("fi", "f1");
+    UserContext.set("fi", "ten_2");
 
     Content beanOther = new Content();
     beanOther.setTitle("Banana");
