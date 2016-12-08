@@ -11,20 +11,20 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DataSourceProvider implements TenantDataSourceProvider {
+class DataSourceProvider implements TenantDataSourceProvider {
 
   private static final Logger log = LoggerFactory.getLogger(DataSourceProvider.class);
 
-  private final ConcurrentHashMap<String, DataSource> cache = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<Object, DataSource> cache = new ConcurrentHashMap<>();
 
   private final ServerConfig serverConfig;
 
-  public DataSourceProvider(ServerConfig serverConfig) {
+  DataSourceProvider(ServerConfig serverConfig) {
     this.serverConfig = serverConfig;
   }
 
   @Override
-  public DataSource dataSource(String tenantId) {
+  public DataSource dataSource(Object tenantId) {
 
     if (tenantId == null) {
       tenantId = "default";
@@ -32,7 +32,7 @@ public class DataSourceProvider implements TenantDataSourceProvider {
     return getOrCreate(tenantId);
   }
 
-  private DataSource getOrCreate(String tenantId) {
+  private DataSource getOrCreate(Object tenantId) {
     return cache.computeIfAbsent(tenantId, s -> createAndMigrateDataSource(tenantId));
   }
 
@@ -40,7 +40,7 @@ public class DataSourceProvider implements TenantDataSourceProvider {
   public void shutdown(boolean deregisterDriver) {
 
     log.info("Shutdown all DataSources");
-    ConcurrentHashMap.KeySetView<String, DataSource> keys = cache.keySet();
+    ConcurrentHashMap.KeySetView<Object, DataSource> keys = cache.keySet();
     keys.forEach(tenantId -> shutdownDataSource(cache.remove(tenantId), deregisterDriver));
   }
 
@@ -50,13 +50,13 @@ public class DataSourceProvider implements TenantDataSourceProvider {
     }
   }
 
-  private DataSource createAndMigrateDataSource(String tenantId) {
+  private DataSource createAndMigrateDataSource(Object tenantId) {
 
     DataSource dataSource = createDataSource(tenantId);
     return serverConfig.runDbMigration(dataSource);
   }
 
-  private DataSource createDataSource(String tenantId) {
+  private DataSource createDataSource(Object tenantId) {
 
     log.info("Create DataSource for tenantId:{}", tenantId);
 
@@ -66,6 +66,6 @@ public class DataSourceProvider implements TenantDataSourceProvider {
     config.setUsername("sa");
     config.setPassword("");
 
-    return new Factory().createPool(tenantId, config);
+    return new Factory().createPool(tenantId.toString(), config);
   }
 }
